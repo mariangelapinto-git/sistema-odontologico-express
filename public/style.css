@@ -1,0 +1,163 @@
+/**
+ * SISTEMA ODONTOLÓGICO - HOJA DE ESTILOS PRINCIPAL
+ * Arquitectura: Basada en Variables CSS para facilitar el mantenimiento y la consistencia de marca.
+ */
+
+:root {
+	/* Variables de Paleta y Layout */
+	--primary-color: #0d6efd;
+	--accent-color: #0dcaf0;
+	--bg-light: #f8f9fa; /* Fondo neutro para reducir la fatiga visual */
+	--sidebar-width: 280px;
+}
+
+body {
+	background-color: var(--bg-light);
+	font-family:
+		"Segoe UI",
+		system-ui,
+		-apple-system,
+		sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+/* --- ESTRUCTURA DE LA APLICACIÓN (LAYOUT) --- */
+
+/**
+ * Contenedor principal que utiliza Flexbox para alinear 
+ * la barra lateral y el contenido de forma responsiva.
+ */
+#wrapper {
+	display: flex;
+	width: 100%;
+	min-height: 100vh;
+}
+
+/**
+ * Área de visualización dinámica. 
+ * 'flex: 1' permite que el contenido ocupe todo el espacio restante.
+ */
+#page-content-wrapper {
+	flex: 1;
+	min-width: 0;
+	background-color: var(--bg-light);
+	overflow-y: auto;
+}
+
+/* --- BARRA LATERAL (SIDEBAR) --- */
+
+.bg-dark {
+	background-color: #1a1d20 !important; /* Variante de gris oscuro profesional */
+	z-index: 1000;
+}
+
+.nav-link {
+	transition: all 0.3s ease;
+	border-radius: 8px;
+	padding: 10px 15px;
+	font-weight: 500;
+}
+
+/* Efectos de interacción para mejorar la experiencia de navegación */
+.nav-link:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+	color: var(--accent-color) !important;
+	transform: translateX(5px); /* Desplazamiento sutil hacia la derecha */
+}
+
+.nav-link.active {
+	background-color: rgba(13, 202, 240, 0.15);
+	color: var(--accent-color) !important;
+	border-left: 4px solid var(--accent-color);
+}
+
+/* --- COMPONENTES UI --- */
+
+/**
+ * Tarjetas: Diseño minimalista 'borderless' con sombras suaves 
+ * para dar profundidad a la interfaz.
+ */
+.card {
+	border: none;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+	margin-bottom: 1.5rem;
+}
+
+/**
+ * Manejo de Vistas:
+ * Define la animación de entrada cuando el usuario cambia de sección.
+ */
+.seccion-vista {
+	width: 100%;
+	animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* --- TABLAS DE DATOS --- */
+
+.table th {
+	color: #8a929a;
+	font-weight: 700;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 15px;
+	border-bottom: 2px solid #f0f2f5;
+}
+
+.table td {
+	padding: 15px;
+	vertical-align: middle;
+}
+
+/* --- LÍNEA DE TIEMPO (EVOLUCIONES) --- */
+
+#timeline {
+	border-left: 2px solid #e9ecef;
+	padding-left: 20px;
+	margin-left: 10px;
+}
+
+.evolucion-item {
+	position: relative;
+	padding-bottom: 20px;
+}
+
+/* --- MODALES Y DIÁLOGOS --- */
+
+.modal-content {
+	border-radius: 16px;
+	border: none;
+	overflow: hidden;
+}
+
+/* --- ESTÉTICA DE SCROLL (WEBKIT) --- */
+
+#page-content-wrapper::-webkit-scrollbar {
+	width: 8px;
+}
+
+#page-content-wrapper::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+#page-content-wrapper::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 10px;
+}
+
+#page-content-wrapper::-webkit-scrollbar-thumb:hover {
+	background: #999;
+}

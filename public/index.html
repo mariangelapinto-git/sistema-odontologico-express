@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>OdontoSys - Gestión Odontológica</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/bootstrap-icons.css" />
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="d-flex" id="wrapper">
+			<div
+				class="bg-dark text-white p-3 shadow"
+				style="width: 280px; min-height: 100vh; flex-shrink: 0"
+			>
+				<h3 class="text-center py-3">
+					<i class="bi bi-shield-plus text-info"></i> OdontoSys
+				</h3>
+				<hr />
+				<ul class="nav flex-column">
+					<li class="nav-item">
+						<a
+							class="nav-link text-white"
+							href="#"
+							onclick="mostrarVista('pacientes')"
+						>
+							<i class="bi bi-people me-2"></i> Pacientes
+						</a>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link text-white"
+							href="#"
+							onclick="mostrarVista('citas')"
+						>
+							<i class="bi bi-calendar-check me-2"></i> Citas
+						</a>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link text-white"
+							href="#"
+							onclick="mostrarVista('evoluciones')"
+						>
+							<i class="bi bi-graph-up me-2"></i> Evoluciones
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<div id="page-content-wrapper" class="flex-grow-1 p-4 bg-light">
+				<div class="container-fluid">
+					<div id="vista-pacientes" class="seccion-vista">
+						<div
+							class="d-flex justify-content-between align-items-center mb-4"
+						>
+							<h2>
+								<i class="bi bi-people"></i> Gestión de
+								Pacientes
+							</h2>
+							<button
+								class="btn btn-primary shadow-sm"
+								data-bs-toggle="modal"
+								data-bs-target="#modalPaciente"
+								onclick="limpiarFormulario()"
+							>
+								<i class="bi bi-person-plus-fill me-1"></i>
+								Nuevo Paciente
+							</button>
+						</div>
+						<div class="card shadow-sm border-0">
+							<div class="card-body">
+								<div class="table-responsive">
+									<table
+										class="table table-hover align-middle"
+									>
+										<thead class="table-light">
+											<tr>
+												<th>Documento</th>
+												<th>Paciente</th>
+												<th>Celular</th>
+												<th>Último Diagnóstico</th>
+												<th class="text-center">
+													Acciones
+												</th>
+											</tr>
+										</thead>
+										<tbody id="tablaPacientes"></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div
+						id="vista-citas"
+						class="seccion-vista"
+						style="display: none"
+					>
+						<div class="card p-4 shadow-sm border-0">
+							<div
+								class="d-flex justify-content-between align-items-center mb-4"
+							>
+								<h4 class="text-primary fw-bold">
+									<i class="bi bi-calendar3"></i> Agenda de
+									Citas
+								</h4>
+
+								<button
+									class="btn btn-primary d-flex align-items-center"
+									data-bs-toggle="modal"
+									data-bs-target="#modalCita"
+									onclick="cargarPacientesEnSelect()"
+								>
+									<i class="bi bi-plus-lg me-2"></i> Agendar
+									Nueva Cita
+								</button>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table table-hover">
+									<thead class="table-light">
+										<tr>
+											<th>Paciente</th>
+											<th>Fecha</th>
+											<th>Hora</th>
+											<th>Motivo</th>
+											<th>Acciones</th>
+										</tr>
+									</thead>
+									<tbody id="tablaCitas"></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<div
+						id="vista-evoluciones"
+						class="seccion-vista"
+						style="display: none"
+					>
+						<div class="card p-4 shadow-sm border-0">
+							<h4
+								id="nombrePacienteEvolucion"
+								class="text-success fw-bold mb-4"
+							>
+								<i class="bi bi-clipboard2-pulse"></i> Historia
+								Clínica
+							</h4>
+
+							<div id="listaEvoluciones" class="mb-4">
+								<p class="text-muted">
+									Seleccione un paciente para ver su
+									historial.
+								</p>
+							</div>
+
+							<div
+								id="contenedor-registro-evolucion"
+								style="display: none"
+								class="border-top pt-4"
+							>
+								<h5 class="text-secondary mb-3">
+									Registrar Nueva Evolución
+								</h5>
+								<input type="hidden" id="id_paciente_actual" />
+
+								<div class="mb-3">
+									<label class="form-label fw-bold"
+										>Nota de Evolución</label
+									>
+									<textarea
+										id="input_nota"
+										class="form-control"
+										rows="3"
+										placeholder="Describa el avance del tratamiento..."
+									></textarea>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<label class="form-label fw-bold"
+											>Odontólogo (Firma)</label
+										>
+										<input
+											type="text"
+											id="input_firma"
+											class="form-control"
+											placeholder="Nombre del doctor"
+										/>
+									</div>
+								</div>
+
+								<button
+									type="button"
+									class="btn btn-success w-100"
+									onclick="guardarEvolucion()"
+								>
+									<i class="bi bi-check-circle me-2"></i
+									>Guardar Evolución
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div
+			class="modal fade"
+			id="modalPaciente"
+			tabindex="-1"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content border-0 shadow">
+					<form id="formPaciente">
+						<div class="modal-header bg-primary text-white">
+							<h5 class="modal-title" id="modalTitle">
+								Registro de Historia Clínica
+							</h5>
+							<button
+								type="button"
+								class="btn-close btn-close-white"
+								data-bs-dismiss="modal"
+							></button>
+						</div>
+						<div class="modal-body p-4">
+							<input type="hidden" id="pacienteId" />
+							<ul class="nav nav-pills mb-4" id="myTab">
+								<li class="nav-item">
+									<button
+										class="nav-link active"
+										data-bs-toggle="tab"
+										data-bs-target="#personal"
+										type="button"
+									>
+										Datos Personales
+									</button>
+								</li>
+								<li class="nav-item">
+									<button
+										class="nav-link"
+										data-bs-toggle="tab"
+										data-bs-target="#clinico"
+										type="button"
+									>
+										Información Clínica
+									</button>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div
+									class="tab-pane fade show active"
+									id="personal"
+								>
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label fw-bold"
+												>Nombres</label
+											>
+											<input
+												type="text"
+												id="nombres"
+												class="form-control"
+												required
+											/>
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold"
+												>1er Apellido</label
+											>
+											<input
+												type="text"
+												id="apellido1"
+												class="form-control"
+												required
+											/>
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold"
+												>2do Apellido</label
+											>
+											<input
+												type="text"
+												id="apellido2"
+												class="form-control"
+											/>
+										</div>
+										<div class="col-md-4">
+											<label class="form-label fw-bold"
+												>Documento</label
+											>
+											<div class="input-group">
+												<select
+													id="tipo_documento"
+													class="form-select"
+													style="max-width: 80px"
+												>
+													<option>CI</option>
+													<option>Rif</option>
+												</select>
+												<input
+													type="text"
+													id="numero_documento"
+													class="form-control"
+													required
+												/>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<label class="form-label fw-bold"
+												>Edad</label
+											>
+											<input
+												type="number"
+												id="edad"
+												class="form-control"
+											/>
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold"
+												>Celular</label
+											>
+											<input
+												type="text"
+												id="celular"
+												class="form-control"
+											/>
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold"
+												>Tipo Sangre</label
+											>
+											<input
+												type="text"
+												id="tipo_sangre"
+												class="form-control"
+												placeholder="O+"
+											/>
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold"
+												>Dirección</label
+											>
+											<input
+												type="text"
+												id="direccion"
+												class="form-control"
+											/>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="clinico">
+									<div class="row g-3">
+										<div class="col-12">
+											<label class="form-label fw-bold"
+												>Motivo de Consulta</label
+											>
+											<textarea
+												id="motivo_consulta"
+												class="form-control"
+												rows="2"
+											></textarea>
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold"
+												>Antecedentes Médicos</label
+											>
+											<textarea
+												id="antecedentes_personales"
+												class="form-control"
+												rows="2"
+												placeholder="Alergias, cirugías, etc."
+											></textarea>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold"
+												>Diagnóstico</label
+											>
+											<textarea
+												id="diagnosticos"
+												class="form-control"
+												rows="3"
+											></textarea>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold"
+												>Plan de Tratamiento</label
+											>
+											<textarea
+												id="plan_tratamiento"
+												class="form-control"
+												rows="3"
+											></textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer bg-light">
+							<button
+								type="button"
+								class="btn btn-secondary"
+								data-bs-dismiss="modal"
+							>
+								Cancelar
+							</button>
+							<button
+								type="submit"
+								class="btn btn-success px-4"
+								id="btnGuardar"
+							>
+								Guardar Registro
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modalCita" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title">
+							<i class="bi bi-calendar-plus"></i> Programar Cita
+						</h5>
+						<button
+							type="button"
+							class="btn-close btn-close-white"
+							data-bs-dismiss="modal"
+						></button>
+					</div>
+					<form id="formCita">
+						<div class="modal-body">
+							<div class="mb-3">
+								<label class="form-label fw-bold"
+									>Seleccionar Paciente</label
+								>
+								<select
+									id="cita_paciente_id"
+									class="form-select"
+									required
+								>
+									<option value="">
+										Seleccione un paciente...
+									</option>
+								</select>
+							</div>
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<label class="form-label fw-bold"
+										>Fecha</label
+									>
+									<input
+										type="date"
+										id="cita_fecha"
+										class="form-control"
+										required
+									/>
+								</div>
+								<div class="col-md-6 mb-3">
+									<label class="form-label fw-bold"
+										>Hora</label
+									>
+									<input
+										type="time"
+										id="cita_hora"
+										class="form-control"
+										required
+									/>
+								</div>
+							</div>
+							<div class="mb-3">
+								<label class="form-label fw-bold"
+									>Motivo de Consulta</label
+								>
+								<textarea
+									id="cita_motivo"
+									class="form-control"
+									rows="3"
+									placeholder="Ej: Limpieza, Extracción, etc."
+								></textarea>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button
+								type="button"
+								class="btn btn-secondary"
+								data-bs-dismiss="modal"
+							>
+								Cancelar
+							</button>
+							<button type="submit" class="btn btn-primary">
+								Guardar Cita
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
